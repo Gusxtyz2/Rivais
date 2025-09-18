@@ -656,4 +656,46 @@ Tab:CreateButton({
     return
 end
             local targetPlayer = game.Players:FindFirstChild(selectedPlayer)
-            if targetPlayer and targetPlayer.Character an
+            if targetPlayer and targetPlayer.Character and targetPlayer.Character:FindFirstChild("HumanoidRootPart") then
+                local targetPos = targetPlayer.Character.HumanoidRootPart.Position + Vector3.new(0, 3, 0)
+                local myChar = game.Players.LocalPlayer.Character
+                if myChar and myChar:FindFirstChild("HumanoidRootPart") then
+                    myChar.HumanoidRootPart.CFrame = CFrame.new(targetPos)
+                    print("Teleportado para", targetPlayer.Name)
+                else
+                    print("Seu personagem não tem HumanoidRootPart")
+                end
+            else
+                print("Jogador inválido ou sem HumanoidRootPart")
+            end
+        else
+            print("Nenhum jogador selecionado")
+        end
+    end
+})
+
+-- Cria o dropdown inicial ao abrir
+criarDropdown()
+
+-- Toggle Rayfield
+Tab:CreateToggle({
+   Name = "🕵️ Ativar ESP de Nome",
+   CurrentValue = false,
+   Flag = "ESPNameToggle",
+   Callback = function(Value)
+      ESPSettings.Enabled = Value
+      if not Value then
+         clearESP()
+      else
+         createESP()
+      end
+   end,
+})
+
+-- Atualiza ESP a cada 5 segundos
+RunService.RenderStepped:Connect(function()
+    if ESPSettings.Enabled then
+        createESP()
+    end
+    wait(5)
+end)
